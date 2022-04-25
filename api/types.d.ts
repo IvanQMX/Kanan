@@ -1,3 +1,8 @@
+export interface Response {
+  status: number;
+  body: any;
+}
+
 export interface IStudent {
   name: string;
   paternalSurname: string;
