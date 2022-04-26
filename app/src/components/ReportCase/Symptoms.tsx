@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect } from "react";
 import SymptomCheckbox from "./SymptomCheckbox";
+import Swal from "sweetalert2";
 
 const SYMPTOMS: Symptom[] = [
   { name: "Fiebre" },
@@ -47,7 +48,17 @@ export default function Symptoms({ sinceDayState, symptomsState }: Symptoms) {
     if (e.target.value) {
       const dateValues = e.target.value.split("-").map((value) => parseInt(value));
       const date = new Date(dateValues[0], dateValues[1] - 1, dateValues[2]);
-      setSinceDay(date);
+      if(date.getTime()>=now.getTime()){
+        Swal.fire({
+          title: "Ingrese una fecha válida",
+          icon: "warning",
+          confirmButtonText: "Aceptar",
+        });
+        setSinceDay(undefined);
+      }
+      else{
+        setSinceDay(date);
+      }
     } else {
       setSinceDay(undefined);
     }

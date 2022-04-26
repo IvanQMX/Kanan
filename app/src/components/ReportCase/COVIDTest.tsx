@@ -6,6 +6,7 @@ export default function COVIDTest({ hasTestPhotoState, testPhotoState }: COVIDTe
   const [testPhotoURL, setTestPhotoURL] = useState<string|undefined>(undefined);
 
   const addTestPhoto = (files: FileList | null) => {
+    //TODO: PNG,JPG Validation
     if (files) {
       setTestPhoto(files[0]);
       setTestPhotoURL(URL.createObjectURL(files[0]))
