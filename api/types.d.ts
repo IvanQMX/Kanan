@@ -10,6 +10,7 @@ export interface IStudent {
   email: string;
   telephone: string;
   password: string;
+  schedule: Array<ILessonDay>
 }
 
 export interface Student extends IStudent, Document {}
