@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { LockClosedIcon, AcademicCapIcon } from "@heroicons/react/solid";
+import axios from "axios";
 
 export default function Login({ sessionState }: Login) {
   const [session, setSession] = sessionState;
-  if(session){
+  if (session) {
     window.location.href = "/";
   }
   const [processingRequest, setProcessingRequest] = useState(false);
@@ -12,7 +13,18 @@ export default function Login({ sessionState }: Login) {
 
   const autenticate = () => {
     setProcessingRequest(true);
-    const valid = studentID === "2020630369" && password === "1"?"Marco":null;
+    axios
+      .post("/api/Login", {
+        studentID,
+        password,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    const valid = studentID === "2020630369" && password === "1" ? "Marco" : null;
     if (valid) {
       setSession(studentID);
     }
