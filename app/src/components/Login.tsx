@@ -11,19 +11,17 @@ export default function Login({ sessionState }: Login) {
   const [studentID, setStudentID] = useState("");
   const [password, setPassword] = useState("");
 
-  const autenticate = () => {
+  const autenticate = async () => {
     setProcessingRequest(true);
-    axios
-      .post("/api/Login", {
+    try {
+      const response = await axios.post("/api/Login", {
         studentID,
         password,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
       });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
     const valid = studentID === "2020630369" && password === "1" ? "Marco" : null;
     if (valid) {
       setSession(studentID);
