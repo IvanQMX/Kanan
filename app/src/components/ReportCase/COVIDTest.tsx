@@ -1,27 +1,38 @@
 import React, { Fragment, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function COVIDTest({ hasTestPhotoState, testPhotoState }: COVIDTest) {
   const [hasTestPhoto, setHasTestPhoto] = hasTestPhotoState;
   const [testPhoto, setTestPhoto] = testPhotoState;
-  const [testPhotoURL, setTestPhotoURL] = useState<string|undefined>(undefined);
+  const [testPhotoURL, setTestPhotoURL] = useState<string | undefined>(undefined);
 
   const addTestPhoto = (files: FileList | null) => {
-    //TODO: PNG,JPG Validation
     if (files) {
-      setTestPhoto(files[0]);
-      setTestPhotoURL(URL.createObjectURL(files[0]))
+      const file = files[0];
+      if (file.type === "image/png" || file.type === "image/jpeg") {
+        setTestPhoto(files[0]);
+        setTestPhotoURL(URL.createObjectURL(files[0]));
+      } else {
+        setTestPhoto(undefined);
+        setTestPhotoURL(undefined);
+        Swal.fire({
+          title: "Solo se aceptan imágenes de tipo .jpg y .png",
+          icon: "warning",
+          confirmButtonText: "Aceptar",
+        });
+      }
     } else {
       setTestPhoto(undefined);
-      setTestPhotoURL(undefined)
+      setTestPhotoURL(undefined);
     }
   };
 
   const removeTestPhoto = () => {
-    if(testPhotoURL){
-      URL.revokeObjectURL(testPhotoURL)
+    if (testPhotoURL) {
+      URL.revokeObjectURL(testPhotoURL);
     }
-      setTestPhoto(undefined);
-      setTestPhotoURL(undefined)
+    setTestPhoto(undefined);
+    setTestPhotoURL(undefined);
   };
 
   return (
@@ -68,7 +79,9 @@ export default function COVIDTest({ hasTestPhotoState, testPhotoState }: COVIDTe
             <div>
               <div>
                 <legend className="text-base font-medium text-gray-900">Foto de la prueba</legend>
-                <p className="text-sm text-gray-500">Anexe una foto visible con los resultados de la prueba.</p>
+                <p className="text-sm text-gray-500">
+                  Anexe una foto visible con los resultados de la prueba.
+                </p>
               </div>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 {!testPhoto ? (
@@ -107,8 +120,17 @@ export default function COVIDTest({ hasTestPhotoState, testPhotoState }: COVIDTe
                   </div>
                 ) : (
                   <div className="flex flex-1 flex-col items-center">
-                    <img src={testPhotoURL} className="w-40 sm:w-auto sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg" alt="Foto de prueba"/>
-                    <button className="mt-2 px-2 py-1 cursor-pointer bg-indigo-600 rounded-md font-semibold text-white hover:bg-indigo-700 focus-within:outline-none" onClick={removeTestPhoto}>Remover foto</button>
+                    <img
+                      src={testPhotoURL}
+                      className="w-40 sm:w-auto sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+                      alt="Foto de prueba"
+                    />
+                    <button
+                      className="mt-2 px-2 py-1 cursor-pointer bg-indigo-600 rounded-md font-semibold text-white hover:bg-indigo-700 focus-within:outline-none"
+                      onClick={removeTestPhoto}
+                    >
+                      Remover foto
+                    </button>
                   </div>
                 )}
               </div>
