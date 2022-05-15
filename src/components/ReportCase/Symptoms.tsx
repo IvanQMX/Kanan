@@ -39,6 +39,10 @@ export default function Symptoms({ sinceDayState, symptomsState }: Symptoms) {
   }, []);
 
   const now = new Date();
+  now.setHours(0)
+  now.setMinutes(0)
+  now.setSeconds(0)
+  now.setMilliseconds(0)
   const oneWeekAgo = new Date(now);
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
   const maxDate = formatDate(now);
@@ -48,15 +52,14 @@ export default function Symptoms({ sinceDayState, symptomsState }: Symptoms) {
     if (e.target.value) {
       const dateValues = e.target.value.split("-").map((value) => parseInt(value));
       const date = new Date(dateValues[0], dateValues[1] - 1, dateValues[2]);
-      if(date.getTime()>=now.getTime()){
+      if (date.getTime() > now.getTime() || date.getTime() < oneWeekAgo.getTime()) {
         Swal.fire({
           title: "Ingrese una fecha válida",
           icon: "warning",
           confirmButtonText: "Aceptar",
         });
         setSinceDay(undefined);
-      }
-      else{
+      } else {
         setSinceDay(date);
       }
     } else {

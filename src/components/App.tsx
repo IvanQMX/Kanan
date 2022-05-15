@@ -23,7 +23,7 @@ function App() {
         <Navbar sessionState={[session, setSession]} />
         <Routes>
           <Route path="/" element={<Home />} />
-          {session ? <Route path="reportar-caso/*" element={<ReportCase />} /> : <></>}
+          {session ? <Route path="reportar-caso/*" element={<ReportCase sessionState={[session, setSession]} />} /> : <></>}
           <Route path="iniciar-sesion/*" element={<Login sessionState={[session, setSession]} />} />
           <Route path="*" element={<h1>404</h1>} />
         </Routes>

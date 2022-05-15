@@ -1,6 +1,18 @@
 import React, { useState } from "react";
-import { LockClosedIcon, AcademicCapIcon } from "@heroicons/react/solid";
+import { LockClosedIcon, AcademicCapIcon, RefreshIcon } from "@heroicons/react/solid";
 import axios from "axios";
+import Swal from "sweetalert2";
+
+const displayErrorMessage = (message: string) => {
+  Swal.fire({
+    title: message,
+    icon: "error",
+    toast: true,
+    timerProgressBar: true,
+    timer: 3000,
+    showConfirmButton: false
+  });
+};
 
 export default function Login({ sessionState }: Login) {
   const [session, setSession] = sessionState;
@@ -14,17 +26,23 @@ export default function Login({ sessionState }: Login) {
   const autenticate = async () => {
     setProcessingRequest(true);
     try {
-      const response = await axios.post("/api/Login", {
-        studentID,
-        password,
-      });
-      console.log(response);
+      const response = await axios.post(
+        "https://kanan.azurewebsites.net/api/Login?code=GILXR6pIo10RFNXSL3RkzHEcZVan5RpsLR1Y9nBBq6yTAzFu-cg91g==",
+        {
+          studentID,
+          password,
+        }
+      );
+      if (response.status === 200) {
+        if (response.data === "True") {
+          setSession(studentID);
+        } else {
+          displayErrorMessage("Credenciales incorrectas")
+        }
+      }
     } catch (error) {
+      displayErrorMessage("No se pudo conectar al servidor. Inténtelo más tarde")
       console.error(error);
-    }
-    const valid = studentID === "2020630369" && password === "1" ? "Marco" : null;
-    if (valid) {
-      setSession(studentID);
     }
     setProcessingRequest(false);
   };
@@ -73,16 +91,23 @@ export default function Login({ sessionState }: Login) {
             <button
               type="button"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={()=>autenticate()}
+              onClick={() => autenticate()}
               disabled={processingRequest}
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                <LockClosedIcon
-                  className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                {processingRequest ? (
+                  <RefreshIcon
+                  className="animate-spin h-5 w-5 text-indigo-400 group-hover:text-indigo-300"
                   aria-hidden="true"
                 />
+                ) : (
+                  <LockClosedIcon
+                    className="h-5 w-5 text-indigo-400 group-hover:text-indigo-300"
+                    aria-hidden="true"
+                  />
+                )}
               </span>
-              Iniciar sesión
+              {processingRequest?"Cargando":"Iniciar sesión"}
             </button>
           </div>
         </div>

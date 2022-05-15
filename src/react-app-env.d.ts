@@ -1,7 +1,13 @@
 /// <reference types="react-scripts" />
 interface Lesson {
+  _id: String;
   group: String;
   subject: String;
+  days: LessonDay[];
+}
+
+interface selectedLesson {
+  _id: String;
   days: LessonDay[];
 }
 
@@ -35,13 +41,17 @@ interface Login {
   sessionState: Session
 }
 
+interface Form {
+  sessionState: Session
+}
+
 interface Navbar {
   sessionState: Session
 }
 
-interface AttendedSchool {
-  schedule: Lesson[];
+interface ExtraInfo {
   sinceDayState: undefined|Date;
   attendedSchoolState: [undefined|boolean, React.Dispatch<React.SetStateAction<undefined|boolean>>];
   selectionState: [Lesson[], React.Dispatch<React.SetStateAction<Lesson[]>>];
+  schedule: Lesson[];
 }

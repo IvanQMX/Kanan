@@ -1,11 +1,11 @@
 import React, { Fragment, useState, useEffect } from "react";
 
-export default function AttendedSchool({
-  schedule,
+export default function ExtraInfo({
   sinceDayState,
   attendedSchoolState,
   selectionState,
-}: AttendedSchool) {
+  schedule,
+}: ExtraInfo) {
   const [attendedSchool, setAttendedSchool] = attendedSchoolState;
   const [selection, setSelection] = selectionState;
   const sinceDay = sinceDayState;
@@ -14,8 +14,7 @@ export default function AttendedSchool({
 
   //* Load Lessons
   useEffect(() => {
-    if (sinceDay) {
-      const scheduleCopy = [...schedule];
+    if (sinceDay && (attendedSchool === undefined || attendedSchool)) {
       const daysOrder: Date[] = [];
       const sinceDayCopy = new Date(sinceDay);
       while (sinceDayCopy.getTime() <= now.getTime()) {
@@ -24,7 +23,6 @@ export default function AttendedSchool({
         }
         sinceDayCopy.setDate(sinceDayCopy.getDate() + 1);
       }
-
       const activeWeekDays: string[] = [];
       for (const date of daysOrder) {
         let day = date
@@ -35,25 +33,27 @@ export default function AttendedSchool({
         day[3] = day[3].replace(/^\w/, (c) => c.toUpperCase());
         activeWeekDays.push(day.join(" "));
       }
-
-      for (const lesson of scheduleCopy) {
+      const newSelection: Lesson[] = [];
+      for (const lesson of schedule) {
+        const lessonCopy = { ...lesson };
         const activeLessonDays: LessonDay[] = [];
         for (const date of daysOrder) {
-          const day = lesson.days[date.getDay() - 1];
+          const day = lessonCopy.days[date.getDay() - 1];
           if (day.time) {
             day.date = date;
           }
           activeLessonDays.push(day);
         }
-        lesson.days = [...activeLessonDays];
+        lessonCopy.days = [...activeLessonDays];
+        newSelection.push(lessonCopy);
       }
-      setSelection([...scheduleCopy]);
+      setSelection([...newSelection]);
       setWeekDays([...activeWeekDays]);
     } else {
       setSelection([]);
       setWeekDays([]);
     }
-  }, [sinceDay]);
+  }, [sinceDay, attendedSchool]);
 
   const selectLessonDay = (selectedSubject: String, selectedDayIndex: number) => {
     const selectionCopy = [...selection];
